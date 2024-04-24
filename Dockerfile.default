@@ -1,5 +1,5 @@
 # Stage 1: Build stage
-FROM golang:1.21.1-alpine as builder
+FROM golang:alpine3.19 as builder
 
 WORKDIR /build
 
@@ -19,7 +19,7 @@ COPY . .
 RUN --mount=type=cache,target=/root/.cache/go-build go build -o /bin/app .
 
 # Stage 2: Final lightweight stage
-FROM alpine:3.19
+FROM alpine:3.19.1
 
 # Copy the binary from builder stage to the final stage
 COPY --from=builder /bin/app /bin/app
