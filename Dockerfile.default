@@ -1,29 +1,31 @@
-# Start from the official Go image
-FROM golang:alpine3.19 as builder
+# Stage 1: Build stage
+FROM golang:1.21.1-alpine as builder
 
-# Set the Current Working Directory inside the container
-WORKDIR /app
+WORKDIR /build
+
+# Set the Go module cache directory
+RUN go env -w GOMODCACHE=/root/.cache/go-build
 
 # Copy go mod and sum files
 COPY go.mod go.sum ./
 
-# Download all dependencies. Dependencies will be cached if the go.mod and go.sum files are not changed
-RUN go mod download
+# Download dependencies. Dependencies will be cached if go.mod and go.sum are not changed
+RUN --mount=type=cache,target=/root/.cache/go-build go mod download
 
-# Copy the source code from the current directory to the Working Directory inside the container
-COPY . .
+# Copy the source code
+COPY ./src ./
 
 # Build the Go app
-RUN go build -o main .
+RUN --mount=type=cache,target=/root/.cache/go-build go build -o /bin/app ./src
 
-# Start a new stage from scratch
+# Stage 2: Final lightweight stage
 FROM alpine:3.19
 
-# Copy the Pre-built binary file from the previous stage
-COPY --from=builder /app/main /app/main
+# Copy the binary from builder stage to the final stage
+COPY --from=builder /bin/app /bin/app
 
-# Expose port 8080 to the outside world
+# Expose port 8080
 EXPOSE 8080
 
 # Command to run the executable
-CMD ["/app/main"]
+CMD ["/bin/app"]
