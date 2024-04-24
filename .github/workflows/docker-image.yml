@@ -25,10 +25,10 @@ jobs:
           ${{ runner.os }}-docker-
     
     - name: Build the Docker image
-      run: docker build . --file Dockerfile.default --tag test:$(date +%s)
+      run: docker build . --file Dockerfile.default --tag wushie/test:$(date +%s)
       
     - name: Log in to Docker Hub
       run: echo "${{ secrets.DOCKERHUB_PASSWORD }}" | docker login -u "${{ secrets.DOCKERHUB_USERNAME }}" --password-stdin
       
     - name: Push Docker image to Docker Hub
-      run: docker push your_image_name:latest
+      run: docker push wushie/test:$(date +%s)
