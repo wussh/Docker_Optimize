@@ -14,18 +14,10 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v4.1.3
       
-    - name: Cache Docker layers
-      uses: actions/cache@v4.0.2
-      with:
-        path: /var/lib/docker
-        key: ${{ runner.os }}-docker-${{ hashFiles('**/Dockerfile*') }}
-        restore-keys: |
-          ${{ runner.os }}-docker-
-      
     - name: Build and push Docker images
       uses: docker/build-push-action@v5.3.0
       with:
         # Path to the Dockerfile
         file: Dockerfile.default
         # List of tags
-        tags: wushie/test:$(date +%s)
+        tags: wushie/test:latest, wushie/test:${{ github.run_number }}
