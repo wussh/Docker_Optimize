@@ -17,7 +17,7 @@ COPY . .
 COPY vendor/ ./vendor
 
 # Build the Go app
-RUN CGO_ENABLED=0 GOOS=linux go build -o main .
+RUN GOOS=linux go build -o main .
 
 # Start a new stage from scratch
 FROM scratch
