@@ -1,5 +1,5 @@
 # Start from the official Go image
-FROM golang:latest as builder
+FROM golang:alpine3.19 as builder
 
 # Set the Current Working Directory inside the container
 WORKDIR /app
@@ -17,7 +17,7 @@ COPY . .
 RUN go build -o main .
 
 # Start a new stage from scratch
-FROM alpine:latest
+FROM alpine:3.19
 
 # Copy the Pre-built binary file from the previous stage
 COPY --from=builder /app/main /app/main
