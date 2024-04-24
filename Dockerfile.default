@@ -15,6 +15,9 @@ RUN --mount=type=cache,target=/root/.cache/go-build go mod download
 # Copy the source code
 COPY . .
 
+# Run go mod vendor to create the vendor directory
+RUN --mount=type=cache,target=/root/.cache/go-build go mod vendor
+
 # Build the Go app
 RUN --mount=type=cache,target=/root/.cache/go-build go build -o /bin/app .
 
@@ -23,6 +26,9 @@ FROM alpine:3.19.1
 
 # Copy the binary from builder stage to the final stage
 COPY --from=builder /bin/app /bin/app
+
+# Copy the vendor directory from the builder stage to the final stage
+COPY --from=builder /build/vendor /vendor
 
 # Expose port 8080
 EXPOSE 8080
