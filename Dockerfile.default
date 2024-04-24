@@ -1,7 +1,7 @@
 # Stage 1: Build stage
 FROM golang:alpine3.19 as builder
 
-WORKDIR /build
+WORKDIR /app
 
 # Set the Go module cache directory
 RUN go env -w GOMODCACHE=/root/.cache/go-build
@@ -19,19 +19,19 @@ COPY . .
 RUN --mount=type=cache,target=/root/.cache/go-build go mod vendor
 
 # Build the Go app
-RUN --mount=type=cache,target=/root/.cache/go-build go build -o /bin/app .
+RUN --mount=type=cache,target=/root/.cache/go-build go build -o /app .
 
 # Stage 2: Final lightweight stage
 FROM alpine:3.19.1
 
 # Copy the binary from builder stage to the final stage
-COPY --from=builder /bin/app /bin/app
+COPY --from=builder /app /app
 
 # Copy the vendor directory from the builder stage to the final stage
-COPY --from=builder /build/vendor /vendor
+# COPY --from=builder /build/vendor /vendor
 
 # Expose port 8080
 EXPOSE 8080
 
 # Command to run the executable
-CMD ["/bin/app"]
+CMD ["/app"]
