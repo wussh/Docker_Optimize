@@ -38,7 +38,7 @@ jobs:
       #     cache-source: go-build-cache
 
       - name: Build
-        uses: docker/build-push-action@v5.3.0
+        uses: docker/build-push-action@v5.4.0
         with:
           # cache-from: type=gha
           # cache-to: type=gha,mode=max
