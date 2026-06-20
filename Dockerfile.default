@@ -22,7 +22,7 @@ RUN --mount=type=cache,target=/root/.cache/go-build go mod vendor
 RUN --mount=type=cache,target=/root/.cache/go-build go build -o /app .
 
 # Stage 2: Final lightweight stage
-FROM alpine:3.19.1
+FROM alpine:3.24.1
 
 # Copy the binary from builder stage to the final stage
 COPY --from=builder /app /app
